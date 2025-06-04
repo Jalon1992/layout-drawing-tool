@@ -1,5 +1,4 @@
-# layout-drawing-tool
-layout for sheds that works from a PDF<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Building Layout Tool</title>
@@ -28,10 +27,28 @@ layout for sheds that works from a PDF<!DOCTYPE html>
     const ctx = canvas.getContext('2d');
     let mode = 'draw';
     let drawing = false;
-    let startX = 0, startY = 0;
 
     function setMode(newMode) {
       mode = newMode;
+    }
+
+    function drawBuildingOutline() {
+      ctx.strokeStyle = 'gray';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(50, 50, 500, 300); // x, y, width, height
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBuildingOutline();
+    }
+
+    function saveDrawing() {
+      const imgData = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = imgData;
+      link.download = 'layout.png';
+      link.click();
     }
 
     canvas.addEventListener('mousedown', (e) => {
@@ -43,11 +60,15 @@ layout for sheds that works from a PDF<!DOCTYPE html>
         ctx.beginPath();
         ctx.moveTo(x, y);
       } else if (mode === 'window') {
+        ctx.beginPath();
         ctx.fillStyle = 'blue';
-        ctx.fillRect(x - 20, y - 10, 40, 20);
+        ctx.arc(x, y, 15, 0, 2 * Math.PI);
+        ctx.fill();
       } else if (mode === 'door') {
+        ctx.beginPath();
         ctx.fillStyle = 'brown';
-        ctx.fillRect(x - 15, y - 30, 30, 60);
+        ctx.arc(x, y, 20, 0, 2 * Math.PI);
+        ctx.fill();
       } else if (mode === 'label') {
         const text = prompt("Enter label text:");
         if (text) {
@@ -71,22 +92,13 @@ layout for sheds that works from a PDF<!DOCTYPE html>
     canvas.addEventListener('mouseup', () => {
       if (drawing) {
         drawing = false;
-        ctx.beginPath(); // reset
+        ctx.beginPath();
       }
     });
 
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function saveDrawing() {
-      const imgData = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = 'layout.png';
-      link.click();
-    }
+    window.onload = drawBuildingOutline;
   </script>
 </body>
 </html>
+
 
